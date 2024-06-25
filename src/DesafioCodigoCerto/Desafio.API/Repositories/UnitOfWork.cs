@@ -21,9 +21,9 @@ namespace Desafio.API.Repositories
             }
         }
 
-        public Task Commit()
+        public async Task Commit()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
     }
 }
