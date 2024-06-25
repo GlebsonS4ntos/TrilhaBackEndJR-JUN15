@@ -16,6 +16,9 @@ builder.Services.AddDbContext<CodigoCertoContext>(opt =>
     });
 
 builder.Services.AddScoped<IRepositoryEmployee, RepositoryEmployee>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
