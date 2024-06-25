@@ -1,4 +1,6 @@
 using Desafio.API.Database.Context;
+using Desafio.API.Interfaces;
+using Desafio.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,7 @@ builder.Services.AddDbContext<CodigoCertoContext>(opt =>
         opt.UseSqlite(builder.Configuration.GetConnectionString("DesafioCodigoCertoDb"));
     });
 
+builder.Services.AddScoped<IRepositoryEmployee, RepositoryEmployee>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
