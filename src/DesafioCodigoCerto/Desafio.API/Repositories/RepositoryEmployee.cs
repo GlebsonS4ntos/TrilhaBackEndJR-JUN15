@@ -1,6 +1,6 @@
 ﻿using Desafio.API.Database.Context;
 using Desafio.API.Interfaces;
-using Desafio.API.Models;
+using Desafio.API.Models.Entities;
 
 namespace Desafio.API.Repositories
 {

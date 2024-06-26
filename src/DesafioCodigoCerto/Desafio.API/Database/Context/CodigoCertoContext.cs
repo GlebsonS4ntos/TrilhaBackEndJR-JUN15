@@ -1,4 +1,4 @@
-﻿using Desafio.API.Models;
+﻿using Desafio.API.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Desafio.API.Database.Context

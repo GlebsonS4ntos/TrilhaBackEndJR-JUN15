@@ -1,4 +1,4 @@
-﻿using Desafio.API.Models;
+﻿using Desafio.API.Models.Entities;
 
 namespace Desafio.API.Interfaces
 {
