@@ -1,5 +1,6 @@
 using Desafio.API.Database.Context;
 using Desafio.API.Interfaces;
+using Desafio.API.Middlewares;
 using Desafio.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,11 @@ builder.Services.AddDbContext<CodigoCertoContext>(opt =>
 builder.Services.AddScoped<IRepositoryEmployee, RepositoryEmployee>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped(provider => new AutoMapper.MapperConfiguration(config =>
+{
+    config.AddProfile<AutoMapperConfig>();
+}).CreateMapper());
 
 var app = builder.Build();
 
