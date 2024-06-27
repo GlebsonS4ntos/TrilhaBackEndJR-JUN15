@@ -1,7 +1,9 @@
 using Desafio.API.Database.Context;
 using Desafio.API.Interfaces;
 using Desafio.API.Middlewares;
+using Desafio.API.Models.Entities;
 using Desafio.API.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,10 @@ builder.Services.AddScoped(provider => new AutoMapper.MapperConfiguration(config
     config.AddProfile<AutoMapperConfig>();
 }).CreateMapper());
 
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt => opt.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<CodigoCertoContext>()
+    .AddDefaultTokenProviders();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -35,6 +41,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
