@@ -1,10 +1,14 @@
 using Desafio.API.Database.Context;
+using Desafio.API.Helpers;
 using Desafio.API.Interfaces;
 using Desafio.API.Middlewares;
 using Desafio.API.Models.Entities;
 using Desafio.API.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,31 @@ builder.Services.AddScoped(provider => new AutoMapper.MapperConfiguration(config
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt => opt.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<CodigoCertoContext>()
     .AddDefaultTokenProviders();
+
+var jwtSettings = new JwtSettings();
+builder.Configuration.GetSection("JWT").Bind(jwtSettings);
+builder.Services.AddSingleton(jwtSettings);
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opt =>
+{
+    opt.SaveToken = true;
+    opt.RequireHttpsMetadata = true;
+    opt.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidAudience = jwtSettings.ValidAudience,
+        ValidIssuer = jwtSettings.ValidIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+    };
+});
 
 var app = builder.Build();
 
