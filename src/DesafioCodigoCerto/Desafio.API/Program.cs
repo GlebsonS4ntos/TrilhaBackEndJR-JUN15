@@ -4,6 +4,7 @@ using Desafio.API.Interfaces;
 using Desafio.API.Middlewares;
 using Desafio.API.Models.Entities;
 using Desafio.API.Repositories;
+using Desafio.API.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ builder.Services.AddDbContext<CodigoCertoContext>(opt =>
 builder.Services.AddScoped<IRepositoryEmployee, RepositoryEmployee>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped(provider => new AutoMapper.MapperConfiguration(config =>
 {
