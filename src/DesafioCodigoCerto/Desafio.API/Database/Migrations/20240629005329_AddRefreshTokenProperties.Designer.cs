@@ -3,6 +3,7 @@ using System;
 using Desafio.API.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Desafio.API.Database.Migrations
 {
     [DbContext(typeof(CodigoCertoContext))]
-    partial class CodigoCertoContextModelSnapshot : ModelSnapshot
+    [Migration("20240629005329_AddRefreshTokenProperties")]
+    partial class AddRefreshTokenProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -89,6 +92,7 @@ namespace Desafio.API.Database.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("RefreshToken")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityStamp")
