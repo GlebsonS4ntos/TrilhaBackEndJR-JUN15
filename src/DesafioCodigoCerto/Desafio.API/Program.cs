@@ -34,9 +34,15 @@ builder.Services.AddScoped(provider => new AutoMapper.MapperConfiguration(config
     config.AddProfile<AutoMapperConfig>();
 }).CreateMapper());
 
-builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt => opt.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<CodigoCertoContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt => {
+        opt.SignIn.RequireConfirmedAccount = false;
+        opt.Password.RequiredUniqueChars = 0;
+        opt.Password.RequireDigit = false;
+        opt.Password.RequireLowercase = false;
+        opt.Password.RequireUppercase = false;
+        opt.Password.RequireNonAlphanumeric = false;
+        opt.Password.RequiredLength = 0;
+    }).AddEntityFrameworkStores<CodigoCertoContext>().AddDefaultTokenProviders();
 
 var jwtSettings = new JwtSettings();
 builder.Configuration.GetSection("JWT").Bind(jwtSettings);
