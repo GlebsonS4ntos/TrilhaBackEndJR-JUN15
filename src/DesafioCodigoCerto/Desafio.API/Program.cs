@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,9 +18,37 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Desafio Codigo Certo", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme.  
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      Example: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
 
-builder.Services.AddDbContext<CodigoCertoContext>(opt => 
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+builder.Services.AddDbContext<CodigoCertoContext>(opt =>
     {
         opt.UseSqlite(builder.Configuration.GetConnectionString("DesafioCodigoCertoDb"));
     });
@@ -34,15 +64,16 @@ builder.Services.AddScoped(provider => new AutoMapper.MapperConfiguration(config
     config.AddProfile<AutoMapperConfig>();
 }).CreateMapper());
 
-builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt => {
-        opt.SignIn.RequireConfirmedAccount = false;
-        opt.Password.RequiredUniqueChars = 0;
-        opt.Password.RequireDigit = false;
-        opt.Password.RequireLowercase = false;
-        opt.Password.RequireUppercase = false;
-        opt.Password.RequireNonAlphanumeric = false;
-        opt.Password.RequiredLength = 0;
-    }).AddEntityFrameworkStores<CodigoCertoContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt =>
+{
+    opt.SignIn.RequireConfirmedAccount = false;
+    opt.Password.RequiredUniqueChars = 0;
+    opt.Password.RequireDigit = false;
+    opt.Password.RequireLowercase = false;
+    opt.Password.RequireUppercase = false;
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.Password.RequiredLength = 0;
+}).AddEntityFrameworkStores<CodigoCertoContext>().AddDefaultTokenProviders();
 
 var jwtSettings = new JwtSettings();
 builder.Configuration.GetSection("JWT").Bind(jwtSettings);
