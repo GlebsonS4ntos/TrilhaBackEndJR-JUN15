@@ -17,14 +17,16 @@ namespace Desafio.API.Controllers
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly JwtSettings _jwtSettings;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AuthController(ITokenService tokenService, JwtSettings jwtSettings, 
-                                UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+                                UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager, IUnitOfWork unitOfWork)
         {
             _tokenService = tokenService;
             _jwtSettings = jwtSettings;
             _userManager = userManager;
             _roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -159,6 +161,8 @@ namespace Desafio.API.Controllers
             user.ExpireTimeRefreshToken = DateTime.MinValue;
 
             await _userManager.UpdateAsync(user);
+            await _unitOfWork.RepositoryRevokedTokenAcess.AddRevokedToken(dto.TokenAcess);
+            await _unitOfWork.Commit();
 
             return Ok();
         }

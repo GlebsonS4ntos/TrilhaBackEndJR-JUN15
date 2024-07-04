@@ -100,6 +100,20 @@ builder.Services.AddAuthentication(opt =>
         ValidIssuer = jwtSettings.ValidIssuer,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
     };
+
+    opt.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var revokedTokenService = context.HttpContext.RequestServices.GetRequiredService<IRepositoryRevokedTokenAcess>();
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (token != null && revokedTokenService.IsTokenRevoked(token))
+            {
+                context.Fail("Token is blacklisted");
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 var app = builder.Build();
