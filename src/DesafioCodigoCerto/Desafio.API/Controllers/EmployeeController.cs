@@ -2,6 +2,7 @@
 using Desafio.API.Interfaces;
 using Desafio.API.Models.Dtos;
 using Desafio.API.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Desafio.API.Controllers
@@ -36,6 +37,7 @@ namespace Desafio.API.Controllers
             return Ok(_mapper.Map<EmployeeDto>(employee));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] EmployeeDto employeeDto)
         {
@@ -46,6 +48,7 @@ namespace Desafio.API.Controllers
             return CreatedAtAction("BuscarEmploeeById", new {id = e.Id}, e);
         }
 
+        [Authorize]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] EmployeeDto employeeDto)
         {
@@ -62,6 +65,7 @@ namespace Desafio.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
