@@ -55,6 +55,8 @@ builder.Services.AddDbContext<CodigoCertoContext>(opt =>
 
 builder.Services.AddScoped<IRepositoryEmployee, RepositoryEmployee>();
 
+builder.Services.AddScoped<IRepositoryRevokedTokenAcess, RepositoryRevokedTokenAcess>();
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
