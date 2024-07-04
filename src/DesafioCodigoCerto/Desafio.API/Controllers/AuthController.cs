@@ -2,6 +2,7 @@
 using Desafio.API.Interfaces;
 using Desafio.API.Models.Dtos;
 using Desafio.API.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -136,7 +137,7 @@ namespace Desafio.API.Controllers
             });
         }
 
-
+        [Authorize]
         [HttpPost]
         [Route("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] TokenDto dto)
